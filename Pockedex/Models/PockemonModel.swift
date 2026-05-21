@@ -2,9 +2,56 @@ import Foundation
 import SwiftUI
 
 
+
+// --------
+// pockedex
+// --------
+
+
+// La respuesta general de la API
+struct PokemonListResponse: Codable {
+    let count: Int
+    let next: String? // Lo usaremos más adelante para el paginado
+    let previous: String?
+    let results: [PokemonResult]
+}
+
+// Cada Pokémon en la lista
+struct PokemonResult: Codable, Identifiable {
+    // Usamos el nombre como ID único para SwiftUI
+    var id: String { name }
+    let name: String
+    let url: String
+}
+
+
+struct PokemonDetail: Codable {
+    let id: Int
+    let name: String
+    let sprites: Sprites
+    let cries: Cries?
+}
+
+
+struct Sprites: Codable {
+    let frontDefault: String?
+    // sirve para poder relacionar una llave del response del api con la propiedad del struct
+//    enum CodingKeys: String, CodingKey {
+//        case frontDefault = "front_default"
+//    }
+}
+
+struct Cries: Codable {
+    let latest: String?
+}
+
+
+
+// -----------
+// tipo de pokemons
+// -----------
+
 // no se consumio la api  "https://pokeapi.co/api/v2/type" por que son datos que no han cambiado asi no desperdiciamos recursos
-
-
 enum PokemonType: String, CaseIterable, Identifiable {
     case normal, fire, water, grass, electric, ice, fighting, poison, ground, flying, psychic, bug, rock, ghost, dragon, dark, steel, fairy
     
@@ -50,41 +97,16 @@ enum PokemonType: String, CaseIterable, Identifiable {
     }
 }
 
-
-
-// La respuesta general de la API
-struct PokemonListResponse: Codable {
-    let count: Int
-    let next: String? // Lo usaremos más adelante para el paginado
-    let previous: String?
-    let results: [PokemonResult]
+struct TypeDetailResponse: Codable {
+    let pokemon: [TypePokemonWrapper]
 }
 
-// Cada Pokémon en la lista
-struct PokemonResult: Codable, Identifiable {
-    // Usamos el nombre como ID único para SwiftUI
-    var id: String { name }
-    let name: String
-    let url: String
+struct TypePokemonWrapper: Codable {
+    let pokemon: PokemonResult
 }
 
 
-struct PokemonDetail: Codable {
-    let id: Int
-    let name: String
-    let sprites: Sprites
-    let cries: Cries?
-}
 
 
-struct Sprites: Codable {
-    let frontDefault: String?
-//    enum CodingKeys: String, CodingKey {
-//        case frontDefault = "front_default"
-//    }
-}
 
 
-struct Cries: Codable {
-    let latest: String?
-}

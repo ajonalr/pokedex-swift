@@ -9,41 +9,41 @@ import SwiftUI
 
 struct CategoryListView: View {
     
-    @State private var selectedType : PokemonType? = nil
+    // 1. Quitamos el @State privado
+//    @State private var selectedType : PokemonType? = nil
+    // y pedimos que nos pasen el ViewModel desde afuera
+    var viewModel: PokedexViewModel
     
     var body: some View {
 
       ScrollView(.horizontal, showsIndicators: false) {
          
-        HStack(spacing: 12) {
-              
+        HStack(spacing: 10) {
             
             // cerea el "select" en la vista
             CategoryChip(
                 title: "All",
-                isSelected: selectedType == nil,
+                isSelected: viewModel.selectedType == nil,
                 baseColor: .gray
             ){
-                selectedType = nil
+                viewModel.selectedType = nil
             }
             
          //obtenemos los enums
             ForEach(PokemonType.allCases) {tipo in CategoryChip(
                 title: tipo.nombreEnEspanol,
-                isSelected: selectedType == tipo,
+                isSelected: viewModel.selectedType == tipo,
                 baseColor: tipo.colorBase,
             ) {
-                selectedType = tipo
+                Task{ await viewModel.changeType(to: tipo) }
+                }
             }
-                
-
-            }
-            
-            
           }
-        .padding(20)
+        .padding(.horizontal, 2)
+        .padding(.vertical, 1)
+        .onAppear{ print("on appear") }
           
-          Spacer()
+//          Spacer()
           
         }
 
@@ -80,5 +80,5 @@ struct CategoryChip: View {
 }
 
 #Preview {
-    CategoryListView()
+    CategoryListView(viewModel: PokedexViewModel())
 }

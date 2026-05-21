@@ -18,7 +18,9 @@ class PokedexViewModel {
     
     
     var nextUrl: String? = "https://pokeapi.co/api/v2/pokemon?limit=20&offset=0"
-
+    // Categoría actual seleccionada (nil significa "Todos")
+    var selectedType: PokemonType? = nil
+    
     
     func fetchPokemons() async {
         //evitamos hacer una peticion si se esta ejecutando o cargando una
@@ -34,7 +36,7 @@ class PokedexViewModel {
         isLoading = true
         errorMessage = nil
         
-        print("Petitio to: \(urlString)")
+        print("Petition to: \(urlString)")
         
         
         do {
@@ -59,12 +61,57 @@ class PokedexViewModel {
             } else {
                 errorMessage = "Error en el servidor: \(httpResponse.statusCode)"
             }
-            
-            
         }catch {
             print("Error al decodificar o descargar: \(error.localizedDescription)")
             self.errorMessage = "Error: \(error.localizedDescription)"        }
         isLoading = false
+    }
+    
+    func fetchByType (_ type: PokemonType ) async {
+        
+        guard !isLoading else { return }
+        
+        isLoading = true
+        errorMessage = nil
+        
+        let urlString = "https://pokeapi.co/api/v2/type/\(type.rawValue)"
+        
+        guard let url = URL(string: urlString) else { return }
+        
+        do {
+            let (data, _) = try await URLSession.shared.data(from: url)
+            let decodedResponse = try JSONDecoder().decode(TypeDetailResponse.self, from: data)
+            // asignamos los pokemon del wrapper y sobre escribimos la lista
+            self.pokemons = decodedResponse.pokemon.map{ $0.pokemon }
+            
+            // La API te da todos los de ese tipo de un solo golpe,
+            // así que apagamos el paginado poniendo nextUrl en nil.
+            self.nextUrl = nil
+            
+            
+        }catch {
+            self.errorMessage = "Error cargando la Categoria"
+            
+            // porque aca self.errorMessage = "xyz" y a abajo en puro
+        }
+        
+        isLoading = false
+    }
+    
+    
+    func changeType( to newType: PokemonType? ) async {
+        self.selectedType = newType
+        self.pokemons.removeAll()
+        
+        
+        if let type = newType {
+            await fetchByType(type)
+        } else {
+            // Si es nil ("Todos"), reiniciamos el paginado y pedimos los primeros 20
+            self.nextUrl = "https://pokeapi.co/api/v2/pokemon?limit=20&offset=0"
+            await fetchPokemons()
+        }
+        
     }
     
 }

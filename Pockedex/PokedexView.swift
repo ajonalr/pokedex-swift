@@ -15,8 +15,10 @@ struct PokedexView: View {
             VStack {
                 // Aquí colocaremos el menú de categorías más adelante
                 
+                CategoryListView(viewModel: viewModel)
+                
                 if viewModel.pokemons.isEmpty && viewModel.isLoading {
-                    VStack(spacing: 12) {
+                    VStack(spacing: 10) {
                         ProgressView()
                             .scaleEffect(1.5)
                         Text("Abriendo Pokebolas...")
@@ -51,7 +53,7 @@ struct PokedexView: View {
                                         .fontWeight(.medium)
                                 }
                             }
-                            .padding(.vertical, 4)
+                            .padding(.vertical, 2)
                             .onAppear {
                                 // Paginado automático
                                 if pokemon.id == viewModel.pokemons.last?.id {
