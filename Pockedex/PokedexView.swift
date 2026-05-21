@@ -10,9 +10,15 @@ import SwiftUI
 struct PokedexView: View {
     @State private var viewModel = PokedexViewModel()
     
+    let columns = [
+        GridItem(.flexible(), spacing: 16),
+        GridItem(.flexible(), spacing: 16),
+    ]
+    
     var body: some View {
+        
         NavigationStack {
-            VStack {
+            VStack(spacing: 0) {
                 // Aquí colocaremos el menú de categorías más adelante
                 
                 CategoryListView(viewModel: viewModel)
@@ -42,39 +48,69 @@ struct PokedexView: View {
                     .frame(maxHeight: .infinity)
                 } else {
 //                    Text("Si existen Datos")
-                    List {
-                        ForEach(viewModel.pokemons) { pokemon in
-                            NavigationLink(
-                                destination: PokemonShowView( pokemonUrl: pokemon.url )
-                            ) {
-                                HStack {
-                                    Text(pokemon.name.capitalized)
-                                        .font(.body)
-                                        .fontWeight(.medium)
+//                    List {
+//                        ForEach(viewModel.pokemons) { pokemon in
+//                            NavigationLink(
+//                                destination: PokemonShowView( pokemonUrl: pokemon.url )
+//                            ) {
+//                                HStack {
+//                                    Text(pokemon.name.capitalized)
+//                                        .font(.body)
+//                                        .fontWeight(.medium)
+//                                }
+//                            }
+//                            .padding(.vertical, 2)
+//                            .onAppear {
+//                                // Paginado automático
+//                                if pokemon.id == viewModel.pokemons.last?.id {
+//                                    print("Cargando más...")
+//                                    Task {
+//                                        await viewModel.fetchPokemons()
+//                                    }
+//                                }
+//                            }
+//                        }
+//                        
+//                        if viewModel.isLoading {
+//                            HStack {
+//                                Spacer()
+//                                ProgressView()
+//                                Spacer()
+//                            }
+//                            .listRowBackground(Color.clear)
+//                        }
+//                    }
+//                    .listStyle(.plain)
+                    
+                    ScrollView {
+                        LazyVGrid(columns: columns, spacing: 16) {
+                            ForEach(viewModel.pokemons) { pokemon in
+                                NavigationLink(destination: PokemonShowView(pokemonUrl: pokemon.url)
+                                ) {
+                                    PokemonGridCardComponent(name: pokemon.name)
                                 }
-                            }
-                            .padding(.vertical, 2)
-                            .onAppear {
-                                // Paginado automático
-                                if pokemon.id == viewModel.pokemons.last?.id {
-                                    print("Cargando más...")
-                                    Task {
-                                        await viewModel.fetchPokemons()
+                                .onAppear{
+                                    if pokemon.id  ==   viewModel.pokemons.last?.id {
+                                        print("Cargando más...")
+                                        Task {
+                                            await viewModel.fetchPokemons()
+                                        }
                                     }
                                 }
+                                
                             }
                         }
+                        .padding(.horizontal, 16)
+                        .padding(.top, 24 )
                         
+                        // Cargando
                         if viewModel.isLoading {
-                            HStack {
-                                Spacer()
-                                ProgressView()
-                                Spacer()
-                            }
-                            .listRowBackground(Color.clear)
+                            ProgressView()
+                                .padding(.vertical, 20)
                         }
                     }
-                    .listStyle(.plain)
+                    
+                    
                 }
             }
             .navigationTitle("Pokédex")
