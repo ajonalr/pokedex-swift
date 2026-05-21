@@ -44,7 +44,7 @@ enum PokemonType: String, CaseIterable, Identifiable {
         case .electric: return .yellow
         case .poison: return .purple
         case .dark: return .black
-        // ... puedes completar los demás según tu gusto de diseño
+        // TODO: AGREGAR LOS DEMAS COLORES PARA LOS TIPOS
         default: return .gray
         }
     }
@@ -66,4 +66,25 @@ struct PokemonResult: Codable, Identifiable {
     var id: String { name }
     let name: String
     let url: String
+}
+
+
+struct PokemonDetail: Codable {
+    let id: Int
+    let name: String
+    let sprites: Sprites
+    let cries: Cries?
+}
+
+
+struct Sprites: Codable {
+    let frontDefault: String?
+//    enum CodingKeys: String, CodingKey {
+//        case frontDefault = "front_default"
+//    }
+}
+
+
+struct Cries: Codable {
+    let latest: String?
 }

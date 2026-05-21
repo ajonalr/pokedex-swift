@@ -42,14 +42,14 @@ struct PokedexView: View {
 //                    Text("Si existen Datos")
                     List {
                         ForEach(viewModel.pokemons) { pokemon in
-                            HStack {
-                                Text(pokemon.name.capitalized)
-                                    .font(.body)
-                                    .fontWeight(.medium)
-                                Spacer()
-                                Image(systemName: "chevron.right")
-                                    .font(.caption)
-                                    .foregroundColor(.gray)
+                            NavigationLink(
+                                destination: PokemonShowView( pokemonUrl: pokemon.url )
+                            ) {
+                                HStack {
+                                    Text(pokemon.name.capitalized)
+                                        .font(.body)
+                                        .fontWeight(.medium)
+                                }
                             }
                             .padding(.vertical, 4)
                             .onAppear {
