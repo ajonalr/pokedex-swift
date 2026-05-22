@@ -12,6 +12,9 @@ import Observation
 @Observable
 class PokedexViewModel {
     
+    
+    private let pokemonApi = PokeAPIService()
+    
     var pokemons: [PokemonResult] = []
     var isLoading: Bool = false
     var errorMessage: String? = nil
@@ -20,6 +23,9 @@ class PokedexViewModel {
     var nextUrl: String? = "https://pokeapi.co/api/v2/pokemon?limit=20&offset=0"
     // Categoría actual seleccionada (nil significa "Todos")
     var selectedType: PokemonType? = nil
+    
+    
+    
     
     
     func fetchPokemons() async {
@@ -31,8 +37,10 @@ class PokedexViewModel {
         guard !isLoading else { return }
         
         // Optional Binding en cadena
-        guard let urlString = nextUrl, let url = URL(string: urlString) else { return }
-                
+//        guard let urlString = nextUrl, let url = URL(string: urlString) else { return }
+//
+        guard !isLoading, let urlString = nextUrl, let url = URL(string: urlString) else { return }
+        
         isLoading = true
         errorMessage = nil
         
@@ -40,30 +48,36 @@ class PokedexViewModel {
         
         
         do {
-            let (data, response) = try await URLSession.shared.data(from: url)
+//            let (data, response) = try await URLSession.shared.data(from: url)
+//            
+//            guard let httpResponse = response as? HTTPURLResponse else {
+//                print("Petition  invalid")
+//                errorMessage = "Error de conexión"
+//                isLoading = false
+//                return
+//            }
+//                        
+//            print("Código de respuesta del servidor: \(httpResponse.statusCode)")
+//            
+//            if httpResponse.statusCode == 200 {
+//                let decodedResponse = try JSONDecoder().decode(PokemonListResponse.self, from: data)
+//                
+//                // Agregamos los pokémon obtenidos
+//                self.pokemons.append(contentsOf: decodedResponse.results)
+//                self.nextUrl = decodedResponse.next
+//                print("Descargados exitosamente \(decodedResponse.results.count) Pokémon. Total actual: \(self.pokemons.count)")
+//            } else {
+//                errorMessage = "Error en el servidor: \(httpResponse.statusCode)"
+//            }
             
-            guard let httpResponse = response as? HTTPURLResponse else {
-                print("Petition  invalid")
-                errorMessage = "Error de conexión"
-                isLoading = false
-                return
-            }
-                        
-            print("Código de respuesta del servidor: \(httpResponse.statusCode)")
+            let respponse = try await pokemonApi.getPokemons(from: url)
+            self.pokemons.append(contentsOf: respponse.results)
+            self.nextUrl = respponse.next
             
-            if httpResponse.statusCode == 200 {
-                let decodedResponse = try JSONDecoder().decode(PokemonListResponse.self, from: data)
-                
-                // Agregamos los pokémon obtenidos
-                self.pokemons.append(contentsOf: decodedResponse.results)
-                self.nextUrl = decodedResponse.next
-                print("✅ Descargados exitosamente \(decodedResponse.results.count) Pokémon. Total actual: \(self.pokemons.count)")
-            } else {
-                errorMessage = "Error en el servidor: \(httpResponse.statusCode)"
-            }
         }catch {
             print("Error al decodificar o descargar: \(error.localizedDescription)")
-            self.errorMessage = "Error: \(error.localizedDescription)"        }
+            self.errorMessage = "Error: \(error.localizedDescription)"
+        }
         isLoading = false
     }
     
@@ -73,26 +87,30 @@ class PokedexViewModel {
         
         isLoading = true
         errorMessage = nil
-        
+
         let urlString = "https://pokeapi.co/api/v2/type/\(type.rawValue)"
-        
         guard let url = URL(string: urlString) else { return }
-        
+//        
+//        do {
+//            let (data, _) = try await URLSession.shared.data(from: url)
+//            let decodedResponse = try JSONDecoder().decode(TypeDetailResponse.self, from: data)
+//            // asignamos los pokemon del wrapper y sobre escribimos la lista
+//            self.pokemons = decodedResponse.pokemon.map{ $0.pokemon }
+//            
+//            // La API te da todos los de ese tipo de un solo golpe,
+//            // así que apagamos el paginado poniendo nextUrl en nil.
+//            self.nextUrl = nil
+//
         do {
-            let (data, _) = try await URLSession.shared.data(from: url)
-            let decodedResponse = try JSONDecoder().decode(TypeDetailResponse.self, from: data)
-            // asignamos los pokemon del wrapper y sobre escribimos la lista
-            self.pokemons = decodedResponse.pokemon.map{ $0.pokemon }
-            
-            // La API te da todos los de ese tipo de un solo golpe,
-            // así que apagamos el paginado poniendo nextUrl en nil.
+
+        
+            let response = try await pokemonApi.getPokemonsByType(from: url)
+            self.pokemons = response.pokemon.map{ $0.pokemon }
             self.nextUrl = nil
-            
+        
             
         }catch {
             self.errorMessage = "Error cargando la Categoria"
-            
-            // porque aca self.errorMessage = "xyz" y a abajo en puro
         }
         
         isLoading = false

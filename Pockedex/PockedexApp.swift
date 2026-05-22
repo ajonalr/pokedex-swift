@@ -9,9 +9,21 @@ import SwiftUI
 
 @main
 struct PockedexApp: App {
+    
+    init() {
+        
+        AudioComponent.shared.startBGM()
+        
+        
+     
+    
+    }
+    
+    
+
     var body: some Scene {
         WindowGroup {
-            PokedexView()
+            TabsView() // PokedexView()
         }
     }
 }

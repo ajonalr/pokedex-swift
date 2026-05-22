@@ -30,9 +30,11 @@ struct PokemonShowView: View {
                                 let _ = print(pokemonUrl)
                                 Text("ID: #\(detail.id)")
                                     .foregroundColor(.white.opacity(0.8))
+                                
+                               
                                 // Aquí puedes agregar más stats después
                             }
-                                .onAppear { print("👀 Viendo el reverso de: \(pokemonUrl)") }
+                                .onAppear { print("👀 Viendo el reverso de: \(detail)") }
                         )
                         // Si está de frente, ocultamos la parte trasera girándola
                         .rotation3DEffect(.degrees(180), axis: (x: 0, y: 1, z: 0))

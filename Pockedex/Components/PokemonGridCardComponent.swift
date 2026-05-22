@@ -10,6 +10,7 @@ import SwiftUI
 struct PokemonGridCardComponent: View {
     
     let name: String
+    let imagenURL: String
     var body: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 15)
@@ -17,12 +18,16 @@ struct PokemonGridCardComponent: View {
                 .shadow( color: Color.black.opacity(0.1), radius: 5, x:0, y: 2)
             
             VStack {
-                Image(systemName: "circle.grid.hex.fill")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 50, height: 50)
-                    .foregroundColor(.gray.opacity(0.3))
-                    .padding(.top, 20)
+               
+                AsyncImage(url: URL(string: imagenURL)) { image in
+                image
+                        .resizable()
+                        .scaledToFit()
+                } placeholder: {
+                    ProgressView()
+                }
+                .frame(height: 90)
+                .padding(.top, 5)
                 
                 Spacer();
                 
@@ -49,5 +54,5 @@ struct PokemonGridCardComponent: View {
 
 
 #Preview {
-    PokemonGridCardComponent(name: "Jona" )
+    PokemonGridCardComponent(name: "Jona", imagenURL: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/3.png" )
 }

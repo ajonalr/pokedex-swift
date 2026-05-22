@@ -17,7 +17,11 @@ struct PokedexView: View {
     
     var body: some View {
         
+        
         NavigationStack {
+            
+          
+            
             VStack(spacing: 0) {
                 // Aquí colocaremos el menú de categorías más adelante
                 
@@ -87,9 +91,10 @@ struct PokedexView: View {
                             ForEach(viewModel.pokemons) { pokemon in
                                 NavigationLink(destination: PokemonShowView(pokemonUrl: pokemon.url)
                                 ) {
-                                    PokemonGridCardComponent(name: pokemon.name)
+                                    PokemonGridCardComponent(name: pokemon.name, imagenURL: getImageUrl(from: pokemon.url))
                                 }
                                 .onAppear{
+                                    print("pokemon url \(pokemon.url)")
                                     if pokemon.id  ==   viewModel.pokemons.last?.id {
                                         print("Cargando más...")
                                         Task {
@@ -109,11 +114,15 @@ struct PokedexView: View {
                                 .padding(.vertical, 20)
                         }
                     }
-                    
-                    
+                
                 }
             }
+            
             .navigationTitle("Pokédex")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbarBackground(.visible, for: .navigationBar)
+            .toolbarBackground(Color.red, for: .navigationBar)
+            .toolbarColorScheme(.dark, for: .navigationBar)
             .task {
                 // Solo dispara la petición si la lista está completamente vacía
                 if viewModel.pokemons.isEmpty {
@@ -122,6 +131,18 @@ struct PokedexView: View {
             }
         }
     }
+}
+
+
+// FUNCIÓN AUXILIAR
+func getImageUrl(from urlString: String) -> String {
+    // urlString viene así: "https://pokeapi.co/api/v2/pokemon/25/"
+    // Al separarlo por "/", el último o penúltimo elemento es el "25" (Pikachu)
+    let components = urlString.split(separator: "/")
+    guard let id = components.last else { return "" }
+    
+    // Retornamos la URL oficial de las imágenes de la PokeAPI
+    return "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/\(id).png"
 }
 
 #Preview {
