@@ -30,7 +30,7 @@ class AudioComponent {
         do {
             bgmPlayer = try AVAudioPlayer(contentsOf: url)
             bgmPlayer?.numberOfLoops = -1
-            bgmPlayer?.volume = 1 // esto es en % 1 = 100%
+            bgmPlayer?.volume = 0.4 // esto es en % 1 = 100%
             bgmPlayer?.play()
             
         }catch {
