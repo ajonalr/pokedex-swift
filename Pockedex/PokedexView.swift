@@ -9,6 +9,7 @@ import SwiftUI
 
 struct PokedexView: View {
     @State private var viewModel = PokedexViewModel()
+    @State private var searchText : String = ""
     
     let columns = [
         GridItem(.flexible(), spacing: 16),
@@ -88,19 +89,32 @@ struct PokedexView: View {
                     
                     ScrollView {
                         LazyVGrid(columns: columns, spacing: 16) {
-                            ForEach(viewModel.pokemons) { pokemon in
+                            
+                            let filterPokemons = searchText.isEmpty ? viewModel.pokemons : viewModel.pokemons.filter{ poke in                                              poke.name.localizedCaseInsensitiveContains(searchText)
+                            }
+                            
+                            ForEach(filterPokemons) { pokemon in
                                 NavigationLink(destination: PokemonShowView(pokemonUrl: pokemon.url)
                                 ) {
                                     PokemonGridCardComponent(name: pokemon.name, imagenURL: getImageUrl(from: pokemon.url))
                                 }
                                 .onAppear{
                                     print("pokemon url \(pokemon.url)")
-                                    if pokemon.id  ==   viewModel.pokemons.last?.id {
-                                        print("Cargando más...")
-                                        Task {
-                                            await viewModel.fetchPokemons()
-                                        }
+                                    
+                                    // primera fonra de continuar con el scroll infinitro pero no optimo para las busquedas
+//                                    if pokemon.id  ==   viewModel.pokemons.last?.id {
+//                                        print("Cargando más...")
+//                                        Task {
+//                                            await viewModel.fetchPokemons()
+//                                        }
+//                                    }
+                                    
+                                    
+                                    // Mantenemos el scroll infinito (Solo cargamos más si NO estamos buscando nada)
+                                    if searchText.isEmpty && pokemon.name == viewModel.pokemons.last?.name {
+                                        Task { await viewModel.fetchPokemons() }
                                     }
+                                    
                                 }
                                 
                             }
@@ -123,6 +137,8 @@ struct PokedexView: View {
             .toolbarBackground(.visible, for: .navigationBar)
             .toolbarBackground(Color.red, for: .navigationBar)
             .toolbarColorScheme(.dark, for: .navigationBar)
+            .searchable(text: $searchText, prompt: "Buscar Pokemon")
+            .toolbarBackground(.visible, for: .navigationBar)
             .task {
                 // Solo dispara la petición si la lista está completamente vacía
                 if viewModel.pokemons.isEmpty {
