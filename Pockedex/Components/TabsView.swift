@@ -8,6 +8,9 @@
 import SwiftUI
 
 struct TabsView: View {
+    
+    @AppStorage("isDarkMode") private var isDarkMode: Bool = false
+    
     var body: some View {
         
         TabView{
@@ -25,8 +28,14 @@ struct TabsView: View {
                     )
                 }
             
+            SettingsView()
+                .tabItem{
+                    Label ("Config", systemImage: "gearshape.fill")
+                }
+            
         }
         .tint(.red)
+        .preferredColorScheme(isDarkMode ? .dark : .light)
         
        
         

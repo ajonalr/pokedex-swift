@@ -117,8 +117,36 @@ struct TypePokemonWrapper: Codable {
     let pokemon: PokemonResult
 }
 
-
-
-
-
+ 
+// filtros pod categorias
+enum PokemonGeneration: String, CaseIterable, Identifiable {
+    case all = "Todas"
+    case gen1 = "1ª Gen (Kanto)"
+    case gen2 = "2ª Gen (Johto)"
+    case gen3 = "3ª Gen (Hoenn)"
+    case gen4 = "4ª Gen (Sinnoh)"
+    case gen5 = "5ª Gen (Unova)"
+    case gen6 = "6ª Gen (Kalos)"
+    case gen7 = "7ª Gen (Alola)"
+    case gen8 = "8ª Gen (Galar)"
+    case gen9 = "9ª Gen (Paldea)"
+    
+    var id: String { self.rawValue }
+    
+    // Rangos oficiales de IDs de la Pokédex oficiales
+    var idRange: ClosedRange<Int>? {
+        switch self {
+        case .all: return nil
+        case .gen1: return 1...151
+        case .gen2: return 152...251
+        case .gen3: return 252...386
+        case .gen4: return 387...493
+        case .gen5: return 494...649
+        case .gen6: return 650...721
+        case .gen7: return 722...809
+        case .gen8: return 810...898
+        case .gen9: return 899...1025
+        }
+    }
+}
 

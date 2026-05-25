@@ -30,8 +30,19 @@ class AudioComponent {
         do {
             bgmPlayer = try AVAudioPlayer(contentsOf: url)
             bgmPlayer?.numberOfLoops = -1
-            bgmPlayer?.volume = 0.4 // esto es en % 1 = 100%
-            bgmPlayer?.play()
+            
+            // los forKey son lo que declaramos con @AppStorage("key")
+            let isMuted = UserDefaults.standard.bool(forKey: "isMusicMuted")
+            let savedVolume = UserDefaults.standard.float(forKey: "musicVolume")
+            
+            // Si el volumen guardado es 0 (primera vez abriendo la app), usamos tu 0.4 por defecto
+            let initialVolume = savedVolume == 0 ? 0.4 : Float(savedVolume)
+            bgmPlayer?.volume = initialVolume
+            
+            if !isMuted {
+                bgmPlayer?.play()
+            }
+        
             
         }catch {
             print( "Error de repoduccion" )
@@ -40,5 +51,19 @@ class AudioComponent {
         
     }
     
+    
+    // funciones para los archivos que quiera configurar el volumen
+    func updateMuteState(isMuted: Bool) {
+        if isMuted {
+            bgmPlayer?.pause()
+        } else {
+            bgmPlayer?.play()
+        }
+    }
+    
+    func updateVolume(to volume: Double) {
+        bgmPlayer?.volume = Float(volume)
+    }
+
     
 }
