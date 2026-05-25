@@ -27,6 +27,7 @@ struct PokedexView: View {
                 // Aquí colocaremos el menú de categorías más adelante
                 
                 CategoryListView(viewModel: viewModel)
+                    .padding(.top, 14)
                 
                 if viewModel.pokemons.isEmpty && viewModel.isLoading {
                     VStack(spacing: 10) {
@@ -98,24 +99,26 @@ struct PokedexView: View {
                                 ) {
                                     PokemonGridCardComponent(name: pokemon.name, imagenURL: getImageUrl(from: pokemon.url))
                                 }
-                                .onAppear{
-                                    print("pokemon url \(pokemon.url)")
-                                    
-                                    // primera fonra de continuar con el scroll infinitro pero no optimo para las busquedas
-//                                    if pokemon.id  ==   viewModel.pokemons.last?.id {
-//                                        print("Cargando más...")
-//                                        Task {
-//                                            await viewModel.fetchPokemons()
-//                                        }
+                                
+                                // comentamos todo el onappear porque hacemos la peticion de un solo al iniciar 
+//                                .onAppear{
+//                                    print("pokemon url \(pokemon.url)")
+//                                    
+//                                    // primera fonra de continuar con el scroll infinitro pero no optimo para las busquedas
+////                                    if pokemon.id  ==   viewModel.pokemons.last?.id {
+////                                        print("Cargando más...")
+////                                        Task {
+////                                            await viewModel.fetchPokemons()
+////                                        }
+////                                    }
+//                                    
+//                                    
+//                                    // Mantenemos el scroll infinito (Solo cargamos más si NO estamos buscando nada)
+//                                    if searchText.isEmpty && pokemon.name == viewModel.pokemons.last?.name {
+//                                        Task { await viewModel.fetchPokemons() }
 //                                    }
-                                    
-                                    
-                                    // Mantenemos el scroll infinito (Solo cargamos más si NO estamos buscando nada)
-                                    if searchText.isEmpty && pokemon.name == viewModel.pokemons.last?.name {
-                                        Task { await viewModel.fetchPokemons() }
-                                    }
-                                    
-                                }
+//                                    
+//                                }
                                 
                             }
                         }
@@ -140,10 +143,14 @@ struct PokedexView: View {
             .searchable(text: $searchText, prompt: "Buscar Pokemon")
             .toolbarBackground(.visible, for: .navigationBar)
             .task {
-                // Solo dispara la petición si la lista está completamente vacía
-                if viewModel.pokemons.isEmpty {
-                    await viewModel.fetchPokemons()
-                }
+                // Solo dispara la petición si la lista está completamente vacía y se completa cuando estamos en el fin de la pantalla y cuando se solicitan los siguientes 20
+                //                if viewModel.pokemons.isEmpty {
+                //                    await viewModel.fetchPokemons()
+                //                }
+                // ------ LO HEMOS COMENTADO PORQUE AHORA LA PETICION DE HACEN LOS 1000 y tantos pokemones al iniciar el app
+                
+                await viewModel.getAllPokemons()
+                
             }
         }
     }

@@ -26,7 +26,9 @@ struct CategoryListView: View {
                 isSelected: viewModel.selectedType == nil,
                 baseColor: .gray
             ){
-                viewModel.selectedType = nil
+                Task {
+                    await viewModel.changeType(to: nil)
+                }
             }
             
          //obtenemos los enums

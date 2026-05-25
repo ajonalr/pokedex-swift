@@ -12,11 +12,7 @@ struct PockedexApp: App {
     
     init() {
         
-        AudioComponent.shared.startBGM()
-        
-        
-     
-    
+//        AudioComponent.shared.startBGM()
     }
     
     

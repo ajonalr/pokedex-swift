@@ -18,7 +18,7 @@ struct PokemonGridCardComponent: View {
                 .shadow( color: Color.black.opacity(0.1), radius: 5, x:0, y: 2)
             
             VStack {
-               
+               // el AsyncImage piede la imgen solo cuando se muestra en pantalla 
                 AsyncImage(url: URL(string: imagenURL)) { image in
                 image
                         .resizable()

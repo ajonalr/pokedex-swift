@@ -16,6 +16,9 @@ class PokedexViewModel {
     private let pokemonApi = PokeAPIService()
     
     var pokemons: [PokemonResult] = []
+    //aqui siempre van a estar los +1000 pokemon para no cargar todo de nuevo
+    private var allPokemons: [PokemonResult] = []
+
     var isLoading: Bool = false
     var errorMessage: String? = nil
     
@@ -24,9 +27,31 @@ class PokedexViewModel {
     // Categoría actual seleccionada (nil significa "Todos")
     var selectedType: PokemonType? = nil
     
+
+    func getAllPokemons() async {
+        guard allPokemons.isEmpty && !isLoading else { return }
+        isLoading = true
+        errorMessage = nil
     
-    
-    
+        guard let url = URL(string: "https://pokeapi.co/api/v2/pokemon?limit=1025&offset=0") else {
+            isLoading = false
+            return
+        }
+        
+        do {
+            
+            let response  = try await pokemonApi.getPokemons(from: url)
+            self.pokemons = response.results
+            self.allPokemons = response.results
+            return
+            
+        }catch {
+            self.errorMessage = "Error"
+            print(error)
+        }
+        isLoading = false
+        
+    }
     
     func fetchPokemons() async {
         //evitamos hacer una peticion si se esta ejecutando o cargando una
@@ -87,6 +112,8 @@ class PokedexViewModel {
         
         isLoading = true
         errorMessage = nil
+        
+        print(type)
 
         let urlString = "https://pokeapi.co/api/v2/type/\(type.rawValue)"
         guard let url = URL(string: urlString) else { return }
@@ -120,15 +147,34 @@ class PokedexViewModel {
     func changeType( to newType: PokemonType? ) async {
         self.selectedType = newType
         self.pokemons.removeAll()
-        
-        
-        if let type = newType {
-            await fetchByType(type)
-        } else {
-            // Si es nil ("Todos"), reiniciamos el paginado y pedimos los primeros 20
-            self.nextUrl = "https://pokeapi.co/api/v2/pokemon?limit=20&offset=0"
-            await fetchPokemons()
+        guard let type = newType else {
+            self.pokemons = allPokemons
+            isLoading = false
+            return
         }
+        
+//        print("pokemons \(pokemons)")
+//        print("AllPokemon \(allPokemons)")
+        print( "\(type.nombreEnEspanol)" )
+        
+    
+        isLoading = true
+        self.pokemons.removeAll()
+        guard let url = URL(string: "https://pokeapi.co/api/v2/type/\(type.rawValue)") else {
+            isLoading = false
+            return
+        }
+        
+        do {
+            let response = try await pokemonApi.getPokemonsByType(from: url)
+            self.pokemons = response.pokemon.map{ $0.pokemon }
+            
+        }catch {
+            self.errorMessage = "Error al buscar Pokémon de tipo \(type.nombreEnEspanol)."
+                        print("Error: \(error)")
+        }
+        
+        isLoading = false
         
     }
     

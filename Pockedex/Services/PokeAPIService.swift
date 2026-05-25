@@ -28,10 +28,17 @@ struct PokeAPIService {
     
     // Función 2: Traer Pokémon por categoría
     func getPokemonsByType(from url: URL) async throws -> TypeDetailResponse {
-        let (data, _) = try await URLSession.shared.data(from: url)
-        let decoder = JSONDecoder()
+        let (data, reponse) = try await URLSession.shared.data(from: url)
+
+        guard let httpResponse = reponse as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+            throw URLError(.badServerResponse)
+        }
         
-        return try decoder.decode(TypeDetailResponse.self, from: data)
+        let decodedData = JSONDecoder()
+        decodedData.keyDecodingStrategy = .convertFromSnakeCase
+    
+         return try decodedData.decode(TypeDetailResponse.self, from: data)
+        
     }
     
     func getPokemonDetail( id: Int ) async throws -> PokemonDetail {
