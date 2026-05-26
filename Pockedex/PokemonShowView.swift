@@ -113,15 +113,7 @@ struct PokemonShowView: View {
                 // Decodificamos usando nuestro decoder personalizado
                 self.detail = try decoder.decode(PokemonDetail.self, from: data)
                 
-                /*
-                // --- FORMA CLÁSICA ) ---
-                // Esta forma requiere que uses el "enum CodingKeys" dentro de tu struct
-                // para decirle manualmente qué variable de Swift corresponde a qué llave del JSON.
-                // lo que se tiene comentado en PokemonModel "Sprites"
-                
-                self.detail = try JSONDecoder().decode(PokemonDetail.self, from: data)
-                */
-                
+             
             } catch {
                 print("Error cargando detalle: \(error)")
             }

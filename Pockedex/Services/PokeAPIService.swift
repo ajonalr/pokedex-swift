@@ -9,9 +9,7 @@ import Foundation
 // Creamos un servicio dedicado exclusivamente a hablar con la PokeAPI
 struct PokeAPIService {
     
-    // Función 1: Traer la lista general
-    // Nota el "throws": esto significa que si algo falla,
-    // le "aventará" el error de regreso al ViewModel para que él lo maneje.
+   
     func getPokemons(from url: URL) async throws -> PokemonListResponse {
         let (data, response) = try await URLSession.shared.data(from: url)
         
@@ -20,8 +18,6 @@ struct PokeAPIService {
         }
         
         let decoder = JSONDecoder()
-        // Si usas el truco del snake_case, lo pones aquí:
-        // decoder.keyDecodingStrategy = .convertFromSnakeCase
         
         return try decoder.decode(PokemonListResponse.self, from: data)
     }
