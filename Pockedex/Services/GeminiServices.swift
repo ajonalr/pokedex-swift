@@ -8,7 +8,6 @@ import Foundation
 import UIKit
 
 class GeminiService {
-    // ⚠️ Pega aquí tu API Key de Google AI Studio
     private let apiKey = ""
     
     func identifyPokemon(from image: UIImage) async throws -> String {
@@ -39,7 +38,6 @@ class GeminiService {
         let jsonData = try JSONSerialization.data(withJSONObject: requestBody)
         
         // 4. Armamos la URL con tu llave
-        // Cambiamos "gemini-1.5-flash" por "gemini-flash-latest" que es la que te funcionó en la terminal
         let urlString = "https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=\(apiKey)"
         guard let url = URL(string: urlString) else { throw URLError(.badURL) }
         
