@@ -33,6 +33,13 @@ struct TabsView: View {
                     Label ("Config", systemImage: "gearshape.fill")
                 }
             
+            MiniGameIAView()
+                .tabItem{
+                    Label(
+                        "Jugar", systemImage: "gamecontroller.fill"
+                    )
+                }
+            
         }
         .tint(.red)
         .preferredColorScheme(isDarkMode ? .dark : .light)

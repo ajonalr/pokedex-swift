@@ -10,9 +10,22 @@
 		E961C83B2FBE216000D639FF /* Pockedex.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Pockedex.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		D71C83EB2FC4D7F200F34BB8 /* Exceptions for "Pockedex" folder in "Pockedex" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = E961C83A2FBE216000D639FF /* Pockedex */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		E961C83D2FBE216000D639FF /* Pockedex */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				D71C83EB2FC4D7F200F34BB8 /* Exceptions for "Pockedex" folder in "Pockedex" target */,
+			);
 			path = Pockedex;
 			sourceTree = "<group>";
 		};
@@ -256,7 +269,9 @@
 				DEVELOPMENT_TEAM = 2P95HXPPQM;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Pockedex/Info.plist;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.games";
+				INFOPLIST_KEY_NSCameraUsageDescription = "Necesitamos acceso a tu cámara para escanear Pokémon en el mundo real.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -289,7 +304,9 @@
 				DEVELOPMENT_TEAM = 2P95HXPPQM;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Pockedex/Info.plist;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.games";
+				INFOPLIST_KEY_NSCameraUsageDescription = "Necesitamos acceso a tu cámara para escanear Pokémon en el mundo real.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
